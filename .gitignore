@@ -3,4 +3,6 @@
 *.o
 *.txt
 
-
+blur/blur
+pearson/pearson
+pearson/verify

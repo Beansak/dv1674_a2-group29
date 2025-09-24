@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# List of input data files
 datas=("128.data" "256.data" "512.data" "1024.data")
 
 for data in "${datas[@]}"; do
