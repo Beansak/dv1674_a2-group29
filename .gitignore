@@ -1,0 +1,9 @@
+# Ignore all PPM image files
+*.ppm
+*.o
+*.txt
+blur
+pearson
+verify
+
+
