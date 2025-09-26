@@ -10,7 +10,9 @@ for img in "${images[@]}"; do
 done
 
 # Run valgrind only after all timing is done, for all images
-
-echo "Running valgrind (callgrind) on im1"
-valgrind --tool=callgrind ./blur 15 "data/im1.ppm" "output_im1.ppm"
-echo "-----------------------------------------"
+for img in "${images[@]}"; do
+    output="output_${img}"
+    echo "Running valgrind on $img..."
+    valgrind --tool=callgrind ./blur 15 "data/$img" "$output"
+    echo "-----------------------------------------"
+done
