@@ -11,7 +11,7 @@ namespace Filter
 {
 
     namespace Gauss
-    {
+    {                   //n = radius (15) 
         void get_weights(int n, double *weights_out)
         {
             for (auto i{0}; i <= n; i++)
@@ -31,7 +31,7 @@ namespace Filter
         {
             for (auto y{0}; y < dst.get_y_size(); y++)
             {
-                double w[Gauss::max_radius]{};
+                double w[Gauss::max_radius]{}; // we create an array to hold the weights
                 Gauss::get_weights(radius, w);
 
                 // unsigned char Matrix::r(unsigned x, unsigned y) const
@@ -39,8 +39,10 @@ namespace Filter
                 //     return R[y * x_size + x];
                 // }
 
+                //define rgb and n (normalization factor) with the center pixel
                 auto r{w[0] * dst.r(x, y)}, g{w[0] * dst.g(x, y)}, b{w[0] * dst.b(x, y)}, n{w[0]};
 
+                //loop through the weights and add the weighted values of the surrounding pixels
                 for (auto wi{1}; wi <= radius; wi++)
                 {
                     auto wc{w[wi]};
