@@ -11,7 +11,7 @@ namespace Filter
 {
 
     namespace Gauss
-    {                   //n = radius (15) 
+    {                   // [A] n = radius (15) 
         void get_weights(int n, double *weights_out)
         {
             for (auto i{0}; i <= n; i++)
@@ -39,14 +39,16 @@ namespace Filter
                 //     return R[y * x_size + x];
                 // }
 
-                //define rgb and n (normalization factor) with the center pixel
+                // [A] define rgb and n (normalization factor) with the center pixel
                 auto r{w[0] * dst.r(x, y)}, g{w[0] * dst.g(x, y)}, b{w[0] * dst.b(x, y)}, n{w[0]};
 
-                //loop through the weights and add the weighted values of the surrounding pixels
+                // [A] loop through the weights and add the weighted values of the surrounding pixels
                 for (auto wi{1}; wi <= radius; wi++)
                 {
                     auto wc{w[wi]};
                     auto x2{x - wi};
+
+                    // [A] check bounds and add the weighted pixel values to rgb and n
                     if (x2 >= 0)
                     {
                         r += wc * dst.r(x2, y);
