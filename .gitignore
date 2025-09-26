@@ -3,6 +3,9 @@
 *.o
 *.txt
 
+# Ignore callgrind output files
+callgrind.out.*
+
 blur/blur
 pearson/pearson
 pearson/verify
