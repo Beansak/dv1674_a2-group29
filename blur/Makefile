@@ -1,7 +1,8 @@
 # Author: David Holmqvist <daae19@student.bth.se>
 
 CXX=g++
-CXXFLAGS=-std=c++17 -g -Wunused -Wall -Wunused
+# [I] Enables AVX optimizations
+CXXFLAGS=-std=c++17 -g -O3 -mavx -Wunused -Wall -Wunused
 
 all: blur
 
