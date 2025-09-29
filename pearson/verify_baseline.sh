@@ -18,14 +18,17 @@ counter=0
 errors_found=0
 warnings_found=0
 
+./pearson "data/128.data" "./data_o/128_seq.data"
+./pearson "data/256.data" "./data_o/256_seq.data"
+./pearson "data/512.data" "./data_o/512_seq.data"
+./pearson "data/1024.data" "./data_o/1024_seq.data"
 
 for size in 128 256 512 1024
 do
     # Run the parallel version (single thread)
-    ./pearson "data/$size.data" "./data_o/${size}_test.data"
 
     # Run the verify script and capture the return code
-    ./verify "./data_o/${size}_seq.data" "./data_o/${size}_test.data"
+    ./verify "./data_o/${size}_seq.data" "./data_o/${size}_baseline.data"
     ret=$?
 
     # Check the return code and print corresponding message
@@ -42,8 +45,6 @@ do
         errors_found=1
     fi
 
-    # Clean up
-    rm "./data_o/${size}_test.data"
 done
 
 # Final output based on results
