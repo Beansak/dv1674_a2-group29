@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# test :)
 echo "NOTE: this script relies on the binaries blur and baseline outputs in data_o to exist"
 
 status=0
