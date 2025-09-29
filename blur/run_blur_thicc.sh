@@ -13,6 +13,6 @@ done
 for img in "${images[@]}"; do
     output="output_${img}"
     echo "Running valgrind on $img..."
-    valgrind --tool=callgrind ./blur 15 "data/$img" "$output"
+    MALLOC_MMAP_THRESHOLD_=0 valgrind --tool=callgrind ./blur 15 "data/$img" "$output"
     echo "-----------------------------------------"
 done
