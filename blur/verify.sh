@@ -1,4 +1,5 @@
 #!/bin/bash
+# test parallel :)
 
 echo "NOTE: this script relies on the binaries blur and blur_par to exist"
 
