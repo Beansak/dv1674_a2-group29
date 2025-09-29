@@ -1,3 +1,4 @@
+# Set default behavior to automatically normalize line endings
 *.sh text eol=lf
 
 blur/run_blur_thicc.sh eol=lf text executable
