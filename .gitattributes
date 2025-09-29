@@ -1,1 +1,4 @@
 *.sh text eol=lf
+
+blur/run_blur_thicc.sh eol=lf text executable
+blur/verify_baseline.sh eol=lf text executable
