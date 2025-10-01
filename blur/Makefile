@@ -2,6 +2,7 @@
 
 CXX=g++
 # [I] Enables AVX optimizations
+# [O3] Optimize for speed
 CXXFLAGS=-std=c++17 -g -O3 -mavx -Wunused -Wall -Wunused
 
 all: blur
