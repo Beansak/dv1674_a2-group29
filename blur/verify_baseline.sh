@@ -2,6 +2,10 @@
 # test :)
 echo "NOTE: this script relies on the binaries blur and baseline outputs in data_o to exist"
 
+echo "Making..."
+make clean > /dev/null 2>&1
+make > /dev/null 2>&1
+
 status=0
 red=$(tput setaf 1)
 green=$(tput setaf 2)

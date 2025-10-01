@@ -1,5 +1,9 @@
 #!/bin/bash
 
+echo "Making..."
+make clean > /dev/null 2>&1
+make > /dev/null 2>&1
+
 images=("im1.ppm" "im2.ppm" "im3.ppm" "im4.ppm")
 
 for img in "${images[@]}"; do
