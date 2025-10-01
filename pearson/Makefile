@@ -1,8 +1,9 @@
 # Author: David Holmqvist <daae19@student.bth.se>
 
 CXX=g++-13
+# [I] Enables AVX optimizations
+# [O3] Optimize for speed
 CXXFLAGS=-std=c++17 -g -O3 -mavx -Wunused -Wall -Wunused
-
 
 all: pearson verify
 

@@ -1,5 +1,10 @@
 #!/bin/bash
 # List of input data files
+
+echo "Making..."
+make clean > /dev/null 2>&1
+make > /dev/null 2>&1
+
 datas=("128.data" "256.data" "512.data" "1024.data")
 
 for data in "${datas[@]}"; do

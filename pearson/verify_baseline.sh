@@ -1,5 +1,9 @@
 #!/bin/bash
 
+echo "Making..."
+make clean > /dev/null 2>&1
+make > /dev/null 2>&1
+
 status=0
 if tput setaf 1 &> /dev/null; then
     red=$(tput setaf 1)
