@@ -8,20 +8,25 @@ Author: David Holmqvist <daae19@student.bth.se>
 #include <cstdlib>
 #include <iostream>
 
-int main(int argc, char const* argv[])
+#include <immintrin.h>
+#include <sleef.h>
+#include <cmath> // for fallback remainder loop
+
+int main(int argc, char const *argv[])
 {
-    if (argc != 4) {
+    if (argc != 4)
+    {
         std::cerr << "Usage: " << argv[0] << " [radius] [infile] [outfile]" << std::endl;
         std::exit(1);
     }
 
-    PPM::Reader reader {};
-    PPM::Writer writer {};
+    PPM::Reader reader{};
+    PPM::Writer writer{};
 
-    auto m { reader(argv[2]) };
-    auto radius { static_cast<unsigned>(std::stoul(argv[1])) };
+    auto m{reader(argv[2])};
+    auto radius{static_cast<unsigned>(std::stoul(argv[1]))};
 
-    auto blurred { Filter::blur(m, radius) };
+    auto blurred{Filter::blur(m, radius)};
     writer(blurred, argv[3]);
 
     return 0;
