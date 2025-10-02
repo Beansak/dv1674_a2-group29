@@ -25,10 +25,10 @@ namespace Filter
             __m256d v_n = _mm256_set1_pd(static_cast<double>(n));
 
             int i = 0;
-            // SIMD loop: process 4 elements at a time
+            //[I]SIMD loop: process 4 elements at a time
             for (; i + step - 1 <= n; i += step)
             {
-                // [I]Creating a vector that holds the current indices
+                //[I]Creating a vector that holds the current indices
                 __m256d v_i = _mm256_set_pd(static_cast<double>(i + 3), static_cast<double>(i + 2), static_cast<double>(i + 1), static_cast<double>(i));
                 __m256d v_x = _mm256_mul_pd(v_i, v_max_x); // x = i * max_x
                 v_x = _mm256_div_pd(v_x, v_n);             // x = x / n
@@ -39,7 +39,7 @@ namespace Filter
                 _mm256_storeu_pd(&weights_out[i], v_result); // store the result in the output array
             }
             
-            // Scalar tail: handle remaining elements
+            //[I]Scalar tail: handle remaining elements
             for (; i <= n; i++)
             {
                 double x{static_cast<double>(i) * max_x / n};
