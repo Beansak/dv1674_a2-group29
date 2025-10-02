@@ -9,7 +9,6 @@ Author: David Holmqvist <daae19@student.bth.se>
 
 #include <immintrin.h>
 #include <sleef.h>
-#include <cmath> // for fallback remainder loop
 
 namespace Filter
 {
