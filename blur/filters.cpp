@@ -7,14 +7,40 @@ Author: David Holmqvist <daae19@student.bth.se>
 #include "ppm.hpp"
 #include <cmath>
 
+#include <immintrin.h>
+#include <sleef.h>
+
 namespace Filter
 {
 
     namespace Gauss
-    {                   // [A] n = radius (15) 
+    { // [A] n = radius (15)
         void get_weights(int n, double *weights_out)
         {
-            for (auto i{0}; i <= n; i++)
+            //[I]SIMD AVX version with scalar tail
+            const int step = 4;
+            //[I]Creating vectors that holds the constants we need for the calculations
+            __m256d v_max_x = _mm256_set1_pd(static_cast<double>(max_x));
+            __m256d v_pi = _mm256_set1_pd(static_cast<double>(pi));
+            __m256d v_n = _mm256_set1_pd(static_cast<double>(n));
+
+            int i = 0;
+            //[I]SIMD loop: process 4 elements at a time
+            for (; i + step - 1 <= n; i += step)
+            {
+                //[I]Creating a vector that holds the current indices
+                __m256d v_i = _mm256_set_pd(static_cast<double>(i + 3), static_cast<double>(i + 2), static_cast<double>(i + 1), static_cast<double>(i));
+                __m256d v_x = _mm256_mul_pd(v_i, v_max_x); // x = i * max_x
+                v_x = _mm256_div_pd(v_x, v_n);             // x = x / n
+
+                __m256d v_x2 = _mm256_mul_pd(-v_x, v_x);     // -x * x
+                __m256d v_x2_pi = _mm256_mul_pd(v_x2, v_pi); // -x * x * pi
+                __m256d v_result = Sleef_expd4_u10(v_x2_pi); // exp(-x * x * pi)
+                _mm256_storeu_pd(&weights_out[i], v_result); // store the result in the output array
+            }
+            
+            //[I]Scalar tail: handle remaining elements
+            for (; i <= n; i++)
             {
                 double x{static_cast<double>(i) * max_x / n};
                 weights_out[i] = exp(-x * x * pi);
