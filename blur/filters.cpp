@@ -29,9 +29,9 @@ namespace Filter
                 // [I]Creating a vector that holds the current indices
                 __m256d v_i = _mm256_set_pd(static_cast<double>(i + 3), static_cast<double>(i + 2), static_cast<double>(i + 1), static_cast<double>(i));
                 __m256d v_x = _mm256_mul_pd(v_i, v_max_x); // x = i * max_x
-                v_x = _mm256_div_pd(v_x, v_n);            // x = x / n'
+                v_x = _mm256_div_pd(v_x, v_n);             // x = x / n'
 
-                __m256d v_x2 = _mm256_mul_pd(-v_x, v_x);        // -x * x
+                __m256d v_x2 = _mm256_mul_pd(-v_x, v_x);     // -x * x
                 __m256d v_x2_pi = _mm256_mul_pd(v_x2, v_pi); // -x * x * pi
                 __m256d v_result = Sleef_expd4_u10(v_x2_pi); // exp(-x * x * pi)
                 _mm256_storeu_pd(&weights_out[i], v_result); // store the result in the output array
