@@ -7,11 +7,15 @@ Author: David Holmqvist <daae19@student.bth.se>
 #include "ppm.hpp"
 #include <cmath>
 
+#include <immintrin.h>
+#include <sleef.h>
+#include <cmath> // for fallback remainder loop
+
 namespace Filter
 {
 
     namespace Gauss
-    {                   // [A] n = radius (15) 
+    { // [A] n = radius (15)
         void get_weights(int n, double *weights_out)
         {
             for (auto i{0}; i <= n; i++)

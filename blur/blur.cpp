@@ -8,10 +8,6 @@ Author: David Holmqvist <daae19@student.bth.se>
 #include <cstdlib>
 #include <iostream>
 
-#include <immintrin.h>
-#include <sleef.h>
-#include <cmath> // for fallback remainder loop
-
 int main(int argc, char const *argv[])
 {
     if (argc != 4)
