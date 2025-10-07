@@ -56,9 +56,9 @@ namespace Filter
         double w[Gauss::max_radius]{}; // we create an array to hold the weights
         Gauss::get_weights(radius, w);
 
-        for (auto x{0}; x < dst.get_x_size(); x++)
+        for (auto y{0}; y < dst.get_y_size(); y++)
         {
-            for (auto y{0}; y < dst.get_y_size(); y++)
+            for (auto x{0}; x < dst.get_x_size(); x++)
             {
                
 
@@ -99,9 +99,9 @@ namespace Filter
             }
         }
 
-        for (auto x{0}; x < dst.get_x_size(); x++)
+        for (auto y{0}; y < dst.get_y_size(); y++)
         {
-            for (auto y{0}; y < dst.get_y_size(); y++)
+            for (auto x{0}; x < dst.get_x_size(); x++)
             {
 
 
