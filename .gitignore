@@ -2,7 +2,6 @@
 *.ppm
 *.o
 *.txt
-*.data
 
 # Ignore callgrind output files
 callgrind.out.*
