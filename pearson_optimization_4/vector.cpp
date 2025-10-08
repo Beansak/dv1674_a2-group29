@@ -7,7 +7,7 @@ Author: David Holmqvist <daae19@student.bth.se>
 #include <cmath>
 #include <vector>
 
-//SIMD
+// SIMD
 #include <immintrin.h>
 #include <sleef.h>
 
@@ -24,6 +24,36 @@ Vector::~Vector()
     }
 
     size = 0;
+}
+
+Vector::Vector(Vector &&other) noexcept
+    : size(other.size),
+      data(other.data),
+      magnitude_cached(other.magnitude_cached),
+      magnitude_cache(other.magnitude_cache)
+{
+    other.data = nullptr;
+    other.size = 0;
+}
+
+// Move assignment operator
+Vector &Vector::operator=(Vector &&other) noexcept
+{
+    if (this == &other)
+        return *this;
+
+    delete[] data; // Free current resources
+
+    // Transfer ownership
+    size = other.size;
+    data = other.data;
+    magnitude_cached = other.magnitude_cached;
+    magnitude_cache = other.magnitude_cache;
+
+    other.data = nullptr;
+    other.size = 0;
+
+    return *this;
 }
 
 Vector::Vector(unsigned size)
@@ -79,8 +109,14 @@ double Vector::mean() const
 
 double Vector::magnitude() const
 {
-    auto dot_prod{dot(*this)};
-    return std::sqrt(dot_prod);
+    if (magnitude_cached)
+    {
+        return magnitude_cache;
+    }
+    magnitude_cached = true;
+    magnitude_cache = std::sqrt(dot(*this));
+
+    return magnitude_cache;
 }
 
 Vector Vector::operator/(double div)
@@ -108,7 +144,7 @@ Vector Vector::operator-(double sub)
 }
 
 // [I] SIMD could be used here for optimization
-double Vector::dot(const Vector& rhs) const
+double Vector::dot(const Vector &rhs) const
 {
     double result{0};
     double partial[4]; // temporary array to hold partial results
@@ -117,13 +153,13 @@ double Vector::dot(const Vector& rhs) const
     int i = 0;
     for (; i + step - 1 < size; i += step)
     {
-        //SIMD version using AVX intrinsics
+        // SIMD version using AVX intrinsics
         __m256d v_this = _mm256_loadu_pd(&data[i]); // load 4 doubles from this->data
         __m256d v_rhs = _mm256_loadu_pd(&rhs.data[i]);
         __m256d v_mul = _mm256_mul_pd(v_this, v_rhs); // multiply element-wise
-        
+
         // horizontal add to get the sum of the 4 products
-        
+
         _mm256_storeu_pd(partial, v_mul); // Store the 4 doubles into an array
         result += partial[0] + partial[1] + partial[2] + partial[3];
     }
