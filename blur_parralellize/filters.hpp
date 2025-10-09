@@ -12,14 +12,14 @@ namespace Filter
     // [I] Create a struct to hold the data for each thread
     struct ThreadData
     {
-        Matrix *src;
+        Matrix *scratch;
         Matrix *dst;
         double *weights;
         int radius;
         int start_row;
         int end_row;
     };
-    
+
     namespace Gauss
     {
         constexpr unsigned max_radius{1000};

@@ -66,7 +66,6 @@ namespace Filter
         int remaining_rows = m.get_y_size() % nr_of_threads;
         
         
-        
 
         // [I] Create a struct to hold the data for each thread
         struct ThreadData thread_data[nr_of_threads];
@@ -80,7 +79,7 @@ namespace Filter
         // [I] Create the threads
         for (int i = 0; i < nr_of_threads; i++)
         {
-            thread_data[i].src = &scratch;
+            thread_data[i].scratch = &scratch;
             thread_data[i].dst = &dst;
             thread_data[i].weights = w;
             thread_data[i].radius = radius;
@@ -113,7 +112,7 @@ namespace Filter
     void *thread_function(void *arg)
         {
             ThreadData *data = static_cast<ThreadData *>(arg);
-            Matrix *src = data->src;
+            Matrix *scratch = data->scratch;
             Matrix *dst = data->dst;
             double *w = data->weights;
             int radius = data->radius;
@@ -159,9 +158,9 @@ namespace Filter
                             n += wc;
                         }
                     }
-                    scratch.r(x, y) = r / n;
-                    scratch.g(x, y) = g / n;
-                    scratch.b(x, y) = b / n;
+                    scratch->r(x, y) = r / n;
+                    scratch->g(x, y) = g / n;
+                    scratch->b(x, y) = b / n;
                 }
             }
 
@@ -170,7 +169,7 @@ namespace Filter
                 for (auto x{0}; x < dst->get_x_size(); x++)
                 {
 
-                    auto r{w[0] * scratch.r(x, y)}, g{w[0] * scratch.g(x, y)}, b{w[0] * scratch.b(x, y)}, n{w[0]};
+                    auto r{w[0] * scratch->r(x, y)}, g{w[0] * scratch->g(x, y)}, b{w[0] * scratch->b(x, y)}, n{w[0]};
 
                     for (auto wi{1}; wi <= radius; wi++)
                     {
@@ -178,17 +177,17 @@ namespace Filter
                         auto y2{y - wi};
                         if (y2 >= 0)
                         {
-                            r += wc * scratch.r(x, y2);
-                            g += wc * scratch.g(x, y2);
-                            b += wc * scratch.b(x, y2);
+                            r += wc * scratch->r(x, y2);
+                            g += wc * scratch->g(x, y2);
+                            b += wc * scratch->b(x, y2);
                             n += wc;
                         }
                         y2 = y + wi;
                         if (y2 < dst->get_y_size())
                         {
-                            r += wc * scratch.r(x, y2);
-                            g += wc * scratch.g(x, y2);
-                            b += wc * scratch.b(x, y2);
+                            r += wc * scratch->r(x, y2);
+                            g += wc * scratch->g(x, y2);
+                            b += wc * scratch->b(x, y2);
                             n += wc;
                         }
                     }
