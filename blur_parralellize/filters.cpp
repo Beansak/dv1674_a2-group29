@@ -38,7 +38,7 @@ namespace Filter
                 __m256d v_result = Sleef_expd4_u10(v_x2_pi); // exp(-x * x * pi)
                 _mm256_storeu_pd(&weights_out[i], v_result); // store the result in the output array
             }
-            
+
             //[I]Scalar tail: handle remaining elements
             for (; i <= n; i++)
             {
@@ -48,7 +48,7 @@ namespace Filter
         }
     }
 
-    Matrix blur(Matrix m, const int radius)
+    Matrix blur(Matrix m, const int radius, const int nr_of_threads)
     {
         Matrix scratch{PPM::max_dimension};
         auto dst{m};
@@ -60,7 +60,6 @@ namespace Filter
         {
             for (auto x{0}; x < dst.get_x_size(); x++)
             {
-               
 
                 // unsigned char Matrix::r(unsigned x, unsigned y) const
                 // {
@@ -103,7 +102,6 @@ namespace Filter
         {
             for (auto x{0}; x < dst.get_x_size(); x++)
             {
-
 
                 auto r{w[0] * scratch.r(x, y)}, g{w[0] * scratch.g(x, y)}, b{w[0] * scratch.b(x, y)}, n{w[0]};
 

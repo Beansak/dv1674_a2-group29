@@ -23,7 +23,7 @@ int main(int argc, char const *argv[])
     auto radius{static_cast<unsigned>(std::stoul(argv[1]))};
     auto nr_of_threads{std::stoi(argv[4])}; // Parse the number of threads
 
-    auto blurred{Filter::blur(m, radius)};
+    auto blurred{Filter::blur(m, radius, nr_of_threads)};
     writer(blurred, argv[3]);
 
     // std::cout << "Number of threads: " << nr_of_threads << std::endl; // Optional: Print the number of threads
