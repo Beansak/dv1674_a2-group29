@@ -1,6 +1,6 @@
 #!/bin/bash
 # test :)
-echo "NOTE: this script relies on the binaries blur and baseline outputs in data_o to exist"
+echo "NOTE: this script relies on the binaries blur_par and baseline outputs in data_o to exist"
 
 echo "Making..."
 make clean > /dev/null 2>&1
@@ -17,7 +17,7 @@ warnings_found=0
 
 for image in im1 im2 im3 im4
     do
-        ./blur 15 "data/$image.ppm" "./data_o/blur_${image}_test.ppm"
+        ./blur_par 15 "data/$image.ppm" "./data_o/blur_${image}_test.ppm"
 
 
 
