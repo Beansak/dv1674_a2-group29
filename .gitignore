@@ -1,5 +1,5 @@
 # Ignore all PPM image files
-*.ppm
+
 *.o
 *.txt
 
