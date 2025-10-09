@@ -17,6 +17,8 @@ do
         then
             echo "${red}Error: Incongruent output data detected when blurring image $image.ppm with $thread thread(s)${reset}"
             status=1
+        else
+            echo "Output matches for $image.ppm with $thread thread(s)"
         fi
 
         rm "./data_o/blur_${image}_par.ppm"
