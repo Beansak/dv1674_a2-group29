@@ -9,3 +9,4 @@ callgrind.out.*
 blur/blur
 pearson/pearson
 pearson/verify
+blur_parralellize/blur_par
