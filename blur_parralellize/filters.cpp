@@ -142,7 +142,19 @@ namespace Filter
         double w[Gauss::max_radius]{}; // we create an array to hold the weights
         Gauss::get_weights(radius, w);
 
-        Matrix scratch{PPM::max_dimension};
+        auto x_size = m.get_x_size();
+        auto y_size = m.get_y_size();
+        unsigned scratch_size;
+        if (y_size > x_size)
+        {
+            scratch_size = y_size;
+        }
+        else
+        {
+            scratch_size = x_size;
+        }
+        Matrix scratch{scratch_size};
+
         auto dst{m};
 
         // [I] Pthreads variables
