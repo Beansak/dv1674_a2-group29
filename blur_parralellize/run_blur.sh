@@ -5,8 +5,8 @@ make clean > /dev/null 2>&1
 make > /dev/null 2>&1
 
 
-# images=("im1.ppm" "im2.ppm" "im3.ppm" "im4.ppm")
-images=("im4.ppm")
+images=("im1.ppm" "im2.ppm" "im3.ppm" "im4.ppm")
+# images=("im4.ppm")
 
 # Add thread counts to test
 thread_counts=(1 2 4 8 16 32)
@@ -22,8 +22,8 @@ for threads in "${thread_counts[@]}"; do
         echo "-----------------------------------------"
     done
 
-    # echo "Running valgrind (callgrind) on im1 with $threads threads"
-    # valgrind --tool=callgrind ./blur_par 15 "data/im1.ppm" "output_im1_threads_${threads}.ppm" "$threads"
-    # rm -f "output_im1_threads_${threads}.ppm" # Remove the Valgrind output file
-    # echo "-----------------------------------------"
+    echo "Running valgrind (callgrind) on im1 with $threads threads"
+    valgrind --tool=callgrind ./blur_par 15 "data/im1.ppm" "output_im1_threads_${threads}.ppm" "$threads"
+    rm -f "output_im1_threads_${threads}.ppm" # Remove the Valgrind output file
+    echo "-----------------------------------------"
 done
