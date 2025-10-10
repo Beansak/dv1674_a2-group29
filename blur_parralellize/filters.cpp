@@ -139,7 +139,7 @@ namespace Filter
     // [I] Main blur function
     Matrix blur(Matrix m, const int radius, const int nr_of_threads)
     {
-        double w[Gauss::max_radius]{}; // we create an array to hold the weights
+        double w[radius + 1]{}; // we create an array to hold the weights
         Gauss::get_weights(radius, w);
 
         auto x_size = m.get_x_size();
