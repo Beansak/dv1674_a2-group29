@@ -47,7 +47,7 @@ namespace Analysis
 
         for (size_t sample1 = startpoint; sample1 < endpoint - 1; sample1++)
         {
-            for (size_t sample2 = sample1 + 1; sample2 < endpoint; sample2++)
+            for (size_t sample2 = sample1 + 1; sample2 < n; sample2++)
             {
                 auto r = normalized[sample1].dot(normalized[sample2]);
                 double clamped_r = std::max(std::min(r, 1.0), -1.0);
