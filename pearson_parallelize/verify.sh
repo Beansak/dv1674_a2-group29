@@ -19,10 +19,10 @@ errors_found=0
 warnings_found=0
 
 # Run pearson to generate sequential output
-./pearson "data/128.data" "./data_o/128_seq.data"
-./pearson "data/256.data" "./data_o/256_seq.data"
-./pearson "data/512.data" "./data_o/512_seq.data"
-./pearson "data/1024.data" "./data_o/1024_seq.data"
+./pearson "data/128.data" "./data_o/128_seq.data" 
+./pearson "data/256.data" "./data_o/256_seq.data" 
+./pearson "data/512.data" "./data_o/512_seq.data" 
+./pearson "data/1024.data" "./data_o/1024_seq.data" 
 
 for thread in 2 4 8 16 32
 do

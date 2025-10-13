@@ -22,10 +22,10 @@ counter=0
 errors_found=0
 warnings_found=0
 
-./pearson "data/128.data" "./data_o/128_seq.data"
-./pearson "data/256.data" "./data_o/256_seq.data"
-./pearson "data/512.data" "./data_o/512_seq.data"
-./pearson "data/1024.data" "./data_o/1024_seq.data"
+./pearson "data/128.data" "./data_o/128_seq.data" 
+./pearson "data/256.data" "./data_o/256_seq.data" 
+./pearson "data/512.data" "./data_o/512_seq.data" 
+./pearson "data/1024.data" "./data_o/1024_seq.data" 
 
 for size in 128 256 512 1024
 do
