@@ -53,8 +53,11 @@ namespace Analysis
                 double clamped_r = std::max(std::min(r, 1.0), -1.0);
 
                 // Synchronize access to the result vector
-                std::lock_guard<std::mutex> lock(result_mutex);
+                // std::lock_guard<std::mutex> lock(result_mutex);
+
                 result->push_back(clamped_r);
+
+                // result->push_back(clamped_r);
             }
         }
 
