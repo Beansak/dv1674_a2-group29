@@ -20,87 +20,90 @@ namespace Analysis
     void *thread_function(void *arg)
     {
         ThreadData *data = static_cast<ThreadData *>(arg);
-        int thread_id = data->thread_id;
-        int n = data->n;
-        std::vector<Vector> *datasets = data->datasets;
-        std::vector<double> *means = data->means;
-        std::vector<double> *result = data->result;
 
-        int startpoint = data->startpoint;
-        int endpoint = data->endpoint;
-
-        for (size_t i = startpoint; i < endpoint; i++)
+        for (size_t i = data->precompute_start; i < data->precompute_end; i++)
         {
-            means->at(i) = datasets->at(i).mean();
-        }
+            (*data->means)[i] = (*data->datasets)[i].mean();
 
-        // precompute normalized vectors (mean-subtracted and divided by magnitude)
-        std::vector<Vector> normalized;
-        normalized.reserve(n);
-
-        for (size_t i = 0; i < n; i++)
-        {
-            auto mm = datasets->at(i) - means->at(i);
+            auto mm = (*data->datasets)[i] - (*data->means)[i];
             auto mag = mm.magnitude();
-            normalized.push_back(mm / mag); // Store the fully normalized vector
+            (*data->normalized)[i] = mm / mag; // Store the fully normalized vector
         }
 
-        for (size_t sample1 = startpoint; sample1 < endpoint - 1; sample1++)
+
+        pthread_barrier_wait(data->barrier);
+
+        for (int pair_index = data->correlation_start; pair_index < data->correlation_end; pair_index++)
         {
-            for (size_t sample2 = sample1 + 1; sample2 < n; sample2++)
+            int sample1 = 0;
+            int temp_index = pair_index;
+
+            while(temp_index >= (data->n - 1 -sample1))
             {
-                auto r = normalized[sample1].dot(normalized[sample2]);
-                double clamped_r = std::max(std::min(r, 1.0), -1.0);
-
-                // Synchronize access to the result vector
-                // std::lock_guard<std::mutex> lock(result_mutex);
-
-                result->push_back(clamped_r);
-
-                // result->push_back(clamped_r);
+                temp_index -= (data->n - 1 - sample1);
+                sample1++;
             }
+
+            int sample2 = sample1 + 1 + temp_index;
+            auto r = data->normalized->at(sample1).dot(data->normalized->at(sample2));
+            auto clamped_r = std::max(std::min(1.0, r), -1.0);
+
+            (*data->result)[pair_index] = clamped_r;
         }
 
-        // Cast the argument back to the appropriate type
-        // Perform thread-specific tasks here
         return nullptr;
     }
 
     std::vector<double> correlation_coefficients(std::vector<Vector> datasets, int nr_of_threads)
     {
-        std::vector<double> result{};
+        
         const size_t n = datasets.size();
+        const size_t total_pairs = n * (n - 1) / 2;
 
-        // reserve space for the result vector to avoid multiple allocations
-        result.reserve(n * (n - 1) / 2);
-
-        // precompute means
+        // [I] Prepare result storage and means and normalized vectors
+        std::vector<double> result(total_pairs);
         std::vector<double> means(n);
+        std::vector<Vector> normalized(n);
+
+        // [I] Initialize the barrier
+        pthread_barrier_t barrier;
+        pthread_barrier_init(&barrier, nullptr, nr_of_threads);
 
         // [A] create threads
         pthread_t threads[nr_of_threads];
-        int thread_ids[nr_of_threads];
-
-        int datapoints_per_thread = n / nr_of_threads;
-        int remaining_datapoints = n % nr_of_threads;
-
         ThreadData thread_data[nr_of_threads];
 
+        int datasets_per_thread = n / nr_of_threads;
+        int remaining_datasets = n % nr_of_threads;
+        int pairs_per_thread = total_pairs / nr_of_threads;
+        int remaining_pairs = total_pairs % nr_of_threads;
+
+        
         for (int i = 0; i < nr_of_threads; i++)
         {
-            thread_ids[i] = i;
             thread_data[i].thread_id = i;
+            thread_data[i].nr_of_threads = nr_of_threads;
             thread_data[i].n = n;
             thread_data[i].datasets = &datasets;
+            thread_data[i].normalized = &normalized;
             thread_data[i].means = &means;
             thread_data[i].result = &result;
+            thread_data[i].barrier = &barrier;
 
-            thread_data[i].startpoint = i * datapoints_per_thread;
-            thread_data[i].endpoint = (i + 1) * datapoints_per_thread;
+            thread_data[i].precompute_start = i * datasets_per_thread;
+            thread_data[i].precompute_end = (i + 1) * datasets_per_thread;
 
             if (i == nr_of_threads - 1)
             {
-                thread_data[i].endpoint += remaining_datapoints; // last thread takes the remainder
+                thread_data[i].precompute_end += remaining_datasets; // last thread takes the remainder
+            }
+
+            thread_data[i].correlation_start = i * pairs_per_thread;
+            thread_data[i].correlation_end = (i + 1) * pairs_per_thread;
+
+            if (i == nr_of_threads - 1)
+            {
+                thread_data[i].correlation_end += remaining_pairs; // last thread takes the remainder
             }
 
             pthread_create(&threads[i], nullptr, thread_function, (void *)&thread_data[i]);
@@ -111,6 +114,8 @@ namespace Analysis
         {
             pthread_join(threads[i], nullptr);
         }
+
+        pthread_barrier_destroy(&barrier);
 
         return result;
     }

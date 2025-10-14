@@ -6,6 +6,7 @@ Author: David Holmqvist <daae19@student.bth.se>
 
 #include "vector.hpp"
 #include <vector>
+#include <pthread.h>
 
 #if !defined(ANALYSIS_HPP)
 #define ANALYSIS_HPP
@@ -18,13 +19,17 @@ namespace Analysis
     struct ThreadData
     {
         int thread_id;
+        int nr_of_threads;
         int n;
         std::vector<Vector> *datasets;
+        std::vector<Vector> *normalized;
         std::vector<double> *means;
         std::vector<double> *result;
 
-        int startpoint;
-        int endpoint;
+        int precompute_start, precompute_end;
+        int correlation_start, correlation_end;
+
+        pthread_barrier_t *barrier;
     };
 
 };
