@@ -21,9 +21,5 @@ for threads in "${thread_counts[@]}"; do
         rm -f "$output" # Remove the output file
         echo "-----------------------------------------"
     done
-
-    echo "Running valgrind (callgrind) on im1 with $threads threads"
-    valgrind --tool=callgrind ./blur_par 15 "data/im1.ppm" "output_im1_threads_${threads}.ppm" "$threads"
-    rm -f "output_im1_threads_${threads}.ppm" # Remove the Valgrind output file
-    echo "-----------------------------------------"
+    echo "========================================="
 done
