@@ -30,9 +30,20 @@ namespace Filter
         Matrix scratch{PPM::max_dimension};
         auto dst{m};
 
-        for (auto x{0}; x < dst.get_x_size(); x++)
+        // [I] Direct pointers to data arrays
+        const unsigned char* dst_R = dst.get_R();
+        const unsigned char* dst_G = dst.get_G();
+        const unsigned char* dst_B = dst.get_B();
+        unsigned char* scratch_R = const_cast<unsigned char*>(scratch.get_R());
+        unsigned char* scratch_G = const_cast<unsigned char*>(scratch.get_G());
+        unsigned char* scratch_B = const_cast<unsigned char*>(scratch.get_B());
+
+        const auto x_size = dst.get_x_size();
+        const auto y_size = dst.get_y_size();
+
+        for (auto x{0}; x < x_size; x++)
         {
-            for (auto y{0}; y < dst.get_y_size(); y++)
+            for (auto y{0}; y < y_size; y++)
             {
                 double w[Gauss::max_radius]{}; // we create an array to hold the weights
                 Gauss::get_weights(radius, w);
@@ -43,8 +54,9 @@ namespace Filter
                 // }
 
                 // [A] define rgb and n (normalization factor) with the center pixel
-                auto r{w[0] * dst.r(x, y)}, g{w[0] * dst.g(x, y)}, b{w[0] * dst.b(x, y)}, n{w[0]};
+                auto r{w[0] * dst_R[y * x_size + x]}, g{w[0] * dst_G[y * x_size + x]}, b{w[0] * dst_B[y * x_size + x]}, n{w[0]};
 
+                
                 // [A] loop through the weights and add the weighted values of the surrounding pixels
                 for (auto wi{1}; wi <= radius; wi++)
                 {
@@ -54,34 +66,34 @@ namespace Filter
                     // [A] check bounds and add the weighted pixel values to rgb and n
                     if (x2 >= 0)
                     {
-                        r += wc * dst.r(x2, y);
-                        g += wc * dst.g(x2, y);
-                        b += wc * dst.b(x2, y);
+                        r += wc * dst_R[y * x_size + x2];
+                        g += wc * dst_G[y * x_size + x2];
+                        b += wc * dst_B[y * x_size + x2];
                         n += wc;
                     }
                     x2 = x + wi;
-                    if (x2 < dst.get_x_size())
+                    if (x2 < x_size)
                     {
-                        r += wc * dst.r(x2, y);
-                        g += wc * dst.g(x2, y);
-                        b += wc * dst.b(x2, y);
+                        r += wc * dst_R[y * x_size + x2];
+                        g += wc * dst_G[y * x_size + x2];
+                        b += wc * dst_B[y * x_size + x2];
                         n += wc;
                     }
                 }
-                scratch.r(x, y) = r / n;
-                scratch.g(x, y) = g / n;
-                scratch.b(x, y) = b / n;
+                scratch_R[y * x_size + x] = r / n;
+                scratch_G[y * x_size + x] = g / n;
+                scratch_B[y * x_size + x] = b / n;
             }
         }
 
-        for (auto x{0}; x < dst.get_x_size(); x++)
+        for (auto x{0}; x < x_size; x++)
         {
-            for (auto y{0}; y < dst.get_y_size(); y++)
+            for (auto y{0}; y < y_size; y++)
             {
                 double w[Gauss::max_radius]{};
                 Gauss::get_weights(radius, w);
 
-                auto r{w[0] * scratch.r(x, y)}, g{w[0] * scratch.g(x, y)}, b{w[0] * scratch.b(x, y)}, n{w[0]};
+                auto r{w[0] * scratch_R[y * x_size + x]}, g{w[0] * scratch_G[y * x_size + x]}, b{w[0] * scratch_B[y * x_size + x]}, n{w[0]};
 
                 for (auto wi{1}; wi <= radius; wi++)
                 {
@@ -89,23 +101,23 @@ namespace Filter
                     auto y2{y - wi};
                     if (y2 >= 0)
                     {
-                        r += wc * scratch.r(x, y2);
-                        g += wc * scratch.g(x, y2);
-                        b += wc * scratch.b(x, y2);
+                        r += wc * scratch_R[y2 * x_size + x];
+                        g += wc * scratch_G[y2 * x_size + x];
+                        b += wc * scratch_B[y2 * x_size + x];
                         n += wc;
                     }
                     y2 = y + wi;
-                    if (y2 < dst.get_y_size())
+                    if (y2 < y_size)
                     {
-                        r += wc * scratch.r(x, y2);
-                        g += wc * scratch.g(x, y2);
-                        b += wc * scratch.b(x, y2);
+                        r += wc * scratch_R[y2 * x_size + x];
+                        g += wc * scratch_G[y2 * x_size + x];
+                        b += wc * scratch_B[y2 * x_size + x];
                         n += wc;
                     }
                 }
-                dst.r(x, y) = r / n;
-                dst.g(x, y) = g / n;
-                dst.b(x, y) = b / n;
+                const_cast<unsigned char*>(dst_R)[y * x_size + x] = r / n;
+                const_cast<unsigned char*>(dst_G)[y * x_size + x] = g / n;
+                const_cast<unsigned char*>(dst_B)[y * x_size + x] = b / n;
             }
         }
 
