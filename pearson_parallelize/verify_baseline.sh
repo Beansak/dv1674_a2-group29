@@ -22,10 +22,13 @@ counter=0
 errors_found=0
 warnings_found=0
 
-./pearson "data/128.data" "./data_o/128_seq.data" 
-./pearson "data/256.data" "./data_o/256_seq.data" 
-./pearson "data/512.data" "./data_o/512_seq.data" 
-./pearson "data/1024.data" "./data_o/1024_seq.data" 
+# delete old output files
+rm -f ./data_o/*_seq.data
+
+./pearson_par "data/128.data" "./data_o/128_seq.data" "1"
+./pearson_par "data/256.data" "./data_o/256_seq.data" "1"
+./pearson_par "data/512.data" "./data_o/512_seq.data" "1"
+./pearson_par "data/1024.data" "./data_o/1024_seq.data" "1"
 
 for size in 128 256 512 1024
 do
