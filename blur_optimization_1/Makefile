@@ -4,13 +4,13 @@ CXX=g++
 # [I] Enables AVX optimizations
 # [O3] Optimize for speed
 CXXFLAGS=-std=c++17 -g -mavx -Wunused -Wall -Wunused
-LDFLAGS=-lsleef     # <- added (link SLEEF library)
+
 
 
 all: blur
 
 blur: matrix ppm filters blur.cpp
-	$(CXX) $(CXXFLAGS) blur.cpp matrix.o ppm.o filters.o -o blur $(LDFLAGS)   # <- added $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) blur.cpp matrix.o ppm.o filters.o -o blur
 
 filters: matrix filters.hpp filters.cpp
 	$(CXX) $(CXXFLAGS) -c filters.cpp -o filters.o

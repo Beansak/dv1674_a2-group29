@@ -8,7 +8,7 @@ Author: David Holmqvist <daae19@student.bth.se>
 #include <cmath>
 
 #include <immintrin.h>
-#include <sleef.h>
+
 
 namespace Filter
 {
